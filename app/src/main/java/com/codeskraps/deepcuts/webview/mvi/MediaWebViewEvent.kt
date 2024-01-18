@@ -1,7 +1,7 @@
 package com.codeskraps.deepcuts.webview.mvi
 
 import android.content.Context
-import com.codeskraps.deepcuts.webview.components.MediaWebView
+import com.codeskraps.deepcuts.webview.media.MediaWebView
 
 sealed interface MediaWebViewEvent {
     data class WebView(val webView: MediaWebView) : MediaWebViewEvent

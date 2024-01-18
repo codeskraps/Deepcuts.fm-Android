@@ -1,4 +1,4 @@
-package com.codeskraps.deepcuts.webview.components
+package com.codeskraps.deepcuts.webview.media
 
 import android.graphics.Bitmap
 import android.view.KeyEvent
@@ -8,20 +8,19 @@ import android.webkit.WebViewClient
 import com.codeskraps.deepcuts.util.Constants
 import com.codeskraps.deepcuts.webview.mvi.MediaWebViewEvent
 
-class MediaWebViewClient(
-    private val handleEvent: (MediaWebViewEvent) -> Unit
-) : WebViewClient() {
+class MediaWebViewClient : WebViewClient() {
 
     var urlListener: ((String) -> Unit)? = null
+    var handleEvent: ((MediaWebViewEvent) -> Unit)? = null
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)
-        handleEvent(MediaWebViewEvent.Loading(true))
+        handleEvent?.let { it(MediaWebViewEvent.Loading(true)) }
     }
 
     override fun onPageFinished(view: WebView?, url: String?) {
         super.onPageFinished(view, url)
-        handleEvent(MediaWebViewEvent.Loading(false))
+        handleEvent?.let { it(MediaWebViewEvent.Loading(false)) }
     }
 
     override fun shouldOverrideKeyEvent(view: WebView?, event: KeyEvent?): Boolean {

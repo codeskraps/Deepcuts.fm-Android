@@ -9,9 +9,7 @@ import com.codeskraps.deepcuts.ForegroundService
 import com.codeskraps.deepcuts.util.BackgroundStatus
 import com.codeskraps.deepcuts.util.Constants
 import com.codeskraps.deepcuts.util.StateReducerViewModel
-import com.codeskraps.deepcuts.webview.components.MediaWebChromeClient
-import com.codeskraps.deepcuts.webview.components.MediaWebView
-import com.codeskraps.deepcuts.webview.components.MediaWebViewClient
+import com.codeskraps.deepcuts.webview.media.MediaWebView
 import com.codeskraps.deepcuts.webview.mvi.MediaWebViewAction
 import com.codeskraps.deepcuts.webview.mvi.MediaWebViewEvent
 import com.codeskraps.deepcuts.webview.mvi.MediaWebViewState
@@ -22,15 +20,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MediaWebViewModel @Inject constructor(
-    mediaWebView: MediaWebView,
+    private val mediaWebView: MediaWebView,
     private val backgroundStatus: BackgroundStatus
 ) : StateReducerViewModel<MediaWebViewState, MediaWebViewEvent, MediaWebViewAction>() {
 
     override fun initState(): MediaWebViewState = MediaWebViewState.initial
 
     init {
-        mediaWebView.setMediaWebChromeClient(MediaWebChromeClient(state::handleEvent))
-        mediaWebView.setMediaWebViewClient(MediaWebViewClient(state::handleEvent))
+        mediaWebView.setHandleListener(state::handleEvent)
 
         state.handleEvent(MediaWebViewEvent.WebView(mediaWebView))
 
@@ -81,5 +78,10 @@ class MediaWebViewModel @Inject constructor(
             actionChannel.send(MediaWebViewAction.Toast("Allow Notification Permission in the Device Settings for the app"))
         }
         return currentState
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mediaWebView.setHandleListener(null)
     }
 }

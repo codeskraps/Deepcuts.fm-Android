@@ -1,15 +1,15 @@
-package com.codeskraps.deepcuts.webview.components
+package com.codeskraps.deepcuts.webview.media
 
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import com.codeskraps.deepcuts.webview.mvi.MediaWebViewEvent
 
-class MediaWebChromeClient(
-    private val handleEvent: (MediaWebViewEvent) -> Unit
-) : WebChromeClient() {
+class MediaWebChromeClient : WebChromeClient() {
+
+    var handleEvent: ((MediaWebViewEvent) -> Unit)? = null
 
     override fun onProgressChanged(view: WebView?, newProgress: Int) {
         super.onProgressChanged(view, newProgress)
-        handleEvent(MediaWebViewEvent.ProgressChanged(newProgress.toFloat()))
+        handleEvent?.let { it(MediaWebViewEvent.ProgressChanged(newProgress.toFloat())) }
     }
 }

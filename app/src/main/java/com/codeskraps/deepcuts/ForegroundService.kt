@@ -11,7 +11,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.codeskraps.deepcuts.util.BackgroundStatus
 import com.codeskraps.deepcuts.util.Constants
-import com.codeskraps.deepcuts.webview.components.MediaWebView
+import com.codeskraps.deepcuts.webview.media.MediaWebView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,16 +35,19 @@ class ForegroundService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.v(TAG, "onStartCommand")
-
+    override fun onCreate() {
+        super.onCreate()
         mediaWebView.setUrlListener { url ->
             (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).run {
                 notify(NOTIF_ID, createNotification(url))
             }
         }
+    }
 
-        var input = ""
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.v(TAG, "onStartCommand")
+
+        var url = ""
 
         intent?.extras?.let {
             if (it.getBoolean(DELETE_EXTRA, false)) {
@@ -60,12 +63,12 @@ class ForegroundService : Service() {
                 return START_NOT_STICKY
 
             } else {
-                input = it.getString(Constants.inputExtra) ?: input
+                url = it.getString(Constants.inputExtra) ?: url
             }
         }
 
         createNotificationChannel()
-        startForeground(NOTIF_ID, createNotification(input))
+        startForeground(NOTIF_ID, createNotification(url))
         backgroundStatus.setValue(true)
 
         return START_NOT_STICKY

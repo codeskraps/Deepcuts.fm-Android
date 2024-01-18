@@ -2,7 +2,7 @@ package com.codeskraps.deepcuts.di
 
 import android.app.Application
 import com.codeskraps.deepcuts.util.BackgroundStatus
-import com.codeskraps.deepcuts.webview.components.MediaWebView
+import com.codeskraps.deepcuts.webview.media.MediaWebView
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

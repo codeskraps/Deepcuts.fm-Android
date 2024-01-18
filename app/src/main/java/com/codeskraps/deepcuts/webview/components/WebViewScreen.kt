@@ -8,6 +8,8 @@ import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
 import android.content.res.Configuration
 import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,6 +48,7 @@ fun WebViewScreen(
     val configuration = LocalConfiguration.current
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val backPressDispatcher = LocalOnBackPressedDispatcherOwner.current
 
     ObserveAsEvents(flow = action) { onAction ->
         when (onAction) {
@@ -71,6 +74,14 @@ fun WebViewScreen(
                     }
                 }
             }
+        }
+    }
+
+    BackHandler {
+        if (state.webView?.canGoBack() == true) {
+            state.webView.goBack()
+        } else {
+            backPressDispatcher?.onBackPressedDispatcher?.onBackPressed()
         }
     }
 

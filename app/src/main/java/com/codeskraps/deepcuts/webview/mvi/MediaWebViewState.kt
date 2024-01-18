@@ -1,6 +1,6 @@
 package com.codeskraps.deepcuts.webview.mvi
 
-import com.codeskraps.deepcuts.webview.components.MediaWebView
+import com.codeskraps.deepcuts.webview.media.MediaWebView
 
 data class MediaWebViewState (
     val loading: Boolean,

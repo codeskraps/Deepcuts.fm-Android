@@ -1,4 +1,4 @@
-package com.codeskraps.deepcuts.webview.components
+package com.codeskraps.deepcuts.webview.media
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -7,12 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebView
+import com.codeskraps.deepcuts.webview.mvi.MediaWebViewEvent
 
 @SuppressLint("SetJavaScriptEnabled")
 class MediaWebView(context: Context) {
 
-    private val webView by lazy { InternalWebView(context) }
-    private var webViewClient: MediaWebViewClient? = null
+    private val webView by lazy {
+        InternalWebView(context).apply {
+            webViewClient = MediaWebViewClient()
+            webChromeClient = MediaWebChromeClient()
+        }
+    }
+
     private var initLoad: Boolean = false
     val attachView: View
         get() = webView
@@ -27,16 +33,12 @@ class MediaWebView(context: Context) {
     }
 
     fun setUrlListener(urlListener: ((String) -> Unit)?) {
-        webViewClient?.urlListener = urlListener
+        (webView.webViewClient as MediaWebViewClient).urlListener = urlListener
     }
 
-    fun setMediaWebChromeClient(webChromeClient: MediaWebChromeClient) {
-        webView.webChromeClient = webChromeClient
-    }
-
-    fun setMediaWebViewClient(webViewClient: MediaWebViewClient) {
-        this.webViewClient = webViewClient
-        webView.webViewClient = webViewClient
+    fun setHandleListener(handleEvent: ((MediaWebViewEvent) -> Unit)?) {
+        (webView.webChromeClient as MediaWebChromeClient).handleEvent = handleEvent
+        (webView.webViewClient as MediaWebViewClient).handleEvent = handleEvent
     }
 
     fun detachView() {
